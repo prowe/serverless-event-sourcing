@@ -16,3 +16,8 @@ aws cloudformation package \
     --template-file cloudformation.template.yaml \
     --s3-bucket $bucket_name \
     --output-template-file cloudformation.transformed.yaml
+
+aws cloudformation deploy \
+    --stack-name=prowe-serverless-event-source \
+    --template-file cloudformation.transformed.yaml \
+    --capabilities=CAPABILITY_IAM

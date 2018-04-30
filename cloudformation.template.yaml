@@ -1,8 +1,35 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
+Description: POC of a serverless event sourcing system. OK to delete after May 2018
 Resources:
   CreateCaseFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/CreateCase.handler
+      Handler: src/CreateEvent.handler
       Runtime: nodejs8.10
+      Policies: AmazonDynamoDBFullAccess
+      Environment:
+        Variables:
+          CASE_EVENTS_TABLE_NAME: !Ref CaseEventsTable
+      Events:
+        CreateCase:
+          Type: Api
+          Properties:
+            Path: /cases/{caseId}/create-events
+            Method: post
+  CaseEventsTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties: 
+      AttributeDefinitions: 
+        - AttributeName: caseId
+          AttributeType: S
+        - AttributeName: eventTimestamp
+          AttributeType: S
+      KeySchema: 
+        - AttributeName: caseId
+          KeyType: HASH
+        - AttributeName: eventTimestamp
+          KeyType: RANGE
+      ProvisionedThroughput: 
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2
