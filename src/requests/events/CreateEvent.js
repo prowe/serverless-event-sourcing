@@ -12,10 +12,10 @@ function handleError(error) {
     }
 }
 
-async function handleValidEvent(value, caseId) {
+async function handleValidEvent(value, requestId) {
     const event = {
         ...value,
-        caseId: request.pathParameters.caseId,
+        requestId,
         eventTimestamp: (new Date(Date.now())).toISOString(),
         eventType: 'Create'
     };
@@ -23,14 +23,12 @@ async function handleValidEvent(value, caseId) {
     await documentClient.put({
         TableName: process.env.CASE_EVENTS_TABLE_NAME,
         Item: event
-    });
+    }).promise();
 
-    const result = {
+    return {
         statusCode: 202,
         body: JSON.stringify(event)
     };
-    console.log('result', result);
-    return result;
 }
 
 module.exports.handler = async function(request) {
@@ -38,5 +36,5 @@ module.exports.handler = async function(request) {
     const body = JSON.parse(request.body);
 
     const {error, value} = schema.validate(body);
-    return handleError(error) || await handleValidEvent(value, request.pathParameters.caseId);    
+    return handleError(error) || await handleValidEvent(value, request.pathParameters.requestId);    
 };
