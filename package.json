@@ -1,0 +1,22 @@
+{
+  "name": "serverless-event-sourcing",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prowe/serverless-event-sourcing.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/prowe/serverless-event-sourcing/issues"
+  },
+  "homepage": "https://github.com/prowe/serverless-event-sourcing#readme",
+  "dependencies": {
+    "aws-sdk": "^2.229.1"
+  }
+}
