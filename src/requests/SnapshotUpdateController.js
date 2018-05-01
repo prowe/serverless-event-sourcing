@@ -22,7 +22,7 @@ async function getAllEventsForRequest(requestId) {
 
 async function saveSnapshot(requestSnapshot) {
     await documentClient.put({
-        TableName: REQUEST_SNAPSHOTS_TABLE_NAME,
+        TableName: process.env.REQUEST_SNAPSHOTS_TABLE_NAME,
         Item: requestSnapshot
     }).promise();
 }

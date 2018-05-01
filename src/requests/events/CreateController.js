@@ -19,6 +19,7 @@ const submitEvent = buildSubmitEventHandler(eventType, schema);
 
 function applyToRequest(event) {
     return {
+        requestId: event.requestId,
         version: 1,
         submitDate: event.eventTimestamp,
         request: event.request,

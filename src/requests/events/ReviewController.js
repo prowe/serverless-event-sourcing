@@ -22,7 +22,7 @@ function applyToRequest(event, request) {
         ...request,
         version: request.version + 1,
         reviewDate: event.eventTimestamp,
-        status: request.determination,
+        status: event.determination,
         rationale: event.rationale
     };
 }
