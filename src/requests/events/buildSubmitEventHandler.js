@@ -21,7 +21,7 @@ module.exports = function buildSubmitEventHandler(eventType, schema) {
         };
     
         await documentClient.put({
-            TableName: process.env.CASE_EVENTS_TABLE_NAME,
+            TableName: process.env.REQUEST_EVENTS_TABLE_NAME,
             Item: event
         }).promise();
     
@@ -31,7 +31,7 @@ module.exports = function buildSubmitEventHandler(eventType, schema) {
         };
     }
     
-    module.exports.handler = async function(request) {
+    return async function(request) {
         console.log('handling', request);
         const body = JSON.parse(request.body);
     

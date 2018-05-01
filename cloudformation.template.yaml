@@ -32,6 +32,23 @@ Resources:
           Properties:
             Path: /requests/{requestId}/events/review
             Method: post
+  RequestSnapshotUpdater:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/requests/SnapshotUpdateController.handler
+      Runtime: nodejs8.10
+      Policies: AmazonDynamoDBFullAccess
+      Environment:
+        Variables:
+          REQUEST_EVENTS_TABLE_NAME: !Ref RequestEventsTable
+          REQUEST_SNAPSHOTS_TABLE_NAME: !Ref RequestSnapshotTable
+      Events:
+        Stream:
+          Type: DynamoDB
+          Properties:
+            Stream: !GetAtt RequestEventsTable.StreamArn
+            StartingPosition: TRIM_HORIZON
+            BatchSize: 1
   RequestEventsTable:
     Type: "AWS::DynamoDB::Table"
     Properties: 
@@ -48,3 +65,20 @@ Resources:
       ProvisionedThroughput: 
         ReadCapacityUnits: 2
         WriteCapacityUnits: 2
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
+  RequestSnapshotTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties: 
+      AttributeDefinitions: 
+        - AttributeName: requestId
+          AttributeType: S
+      KeySchema: 
+        - AttributeName: requestId
+          KeyType: HASH
+      ProvisionedThroughput: 
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2
+Outputs:
+  RestApiEndpoint:
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"

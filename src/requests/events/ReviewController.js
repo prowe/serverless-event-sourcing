@@ -17,7 +17,18 @@ const schema = Joi.object()
 
 const submitEvent = buildSubmitEventHandler(eventType, schema);
 
+function applyToRequest(event, request) {
+    return {
+        ...request,
+        version: request.version + 1,
+        reviewDate: event.eventTimestamp,
+        status: request.determination,
+        rationale: event.rationale
+    };
+}
+
 module.exports = {
     eventType,
-    submitEvent
+    submitEvent,
+    applyToRequest
 };
