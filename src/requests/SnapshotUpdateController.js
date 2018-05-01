@@ -27,11 +27,15 @@ async function saveSnapshot(requestSnapshot) {
     }).promise();
 }
 
-module.exports.handler = async function(event) {
-    console.log('got event', JSON.stringify(event));
-    const requestId = extractRequestIdFromDynamoEvent(event);
+async function handleRecord(record) {
+    const requestId = extractRequestIdFromDynamoEvent(record);
     const events = await getAllEventsForRequest(requestId);
 
     const requestSnapshot = events.reduce(eventReducer, null);
     await saveSnapshot(requestSnapshot);
+}
+
+module.exports.handler = async function(event) {
+    console.log('got event', JSON.stringify(event));
+    await Promise.all(event.Records.map(handleRecord));
 };
