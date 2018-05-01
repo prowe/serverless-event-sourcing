@@ -5,7 +5,7 @@ Resources:
   CreateRequestFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/requests/events/CreateEvent.handler
+      Handler: src/requests/events/CreateController.submitEvent
       Runtime: nodejs8.10
       Policies: AmazonDynamoDBFullAccess
       Environment:
@@ -16,6 +16,21 @@ Resources:
           Type: Api
           Properties:
             Path: /requests/{requestId}/events/create
+            Method: post
+  ReviewRequestFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/requests/events/ReviewController.submitEvent
+      Runtime: nodejs8.10
+      Policies: AmazonDynamoDBFullAccess
+      Environment:
+        Variables:
+          REQUEST_EVENTS_TABLE_NAME: !Ref RequestEventsTable
+      Events:
+        ReviewRequest:
+          Type: Api
+          Properties:
+            Path: /requests/{requestId}/events/review
             Method: post
   RequestEventsTable:
     Type: "AWS::DynamoDB::Table"
