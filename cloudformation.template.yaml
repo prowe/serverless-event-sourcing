@@ -1,6 +1,11 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: POC of a serverless event sourcing system. OK to delete after May 2018
+Globals:
+  Api:
+    Cors: 
+      AllowOrigin: "'*'"
+      AllowMethods: "HEAD,OPTIONS,GET,POST,PUT,PATCH"
 Resources:
   CreateRequestFunction:
     Type: AWS::Serverless::Function
@@ -32,6 +37,21 @@ Resources:
           Properties:
             Path: /requests/{requestId}/events/review
             Method: post
+  ListRequestFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/requests/ListRequests.handler
+      Runtime: nodejs8.10
+      Policies: AmazonDynamoDBFullAccess
+      Environment:
+        Variables:
+          REQUEST_SNAPSHOTS_TABLE_NAME: !Ref RequestSnapshotTable
+      Events:
+        ReviewRequest:
+          Type: Api
+          Properties:
+            Path: /requests
+            Method: get
   RequestSnapshotUpdater:
     Type: AWS::Serverless::Function
     Properties:
