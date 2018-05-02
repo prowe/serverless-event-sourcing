@@ -2,12 +2,17 @@
 const AWS = require('aws-sdk');
 const documentClient = new AWS.DynamoDB.DocumentClient();
 
+const headers = {
+    'Access-Control-Allow-Origin': '*'
+};
+
 module.exports = function buildSubmitEventHandler(eventType, schema) {
     function handleError(error) {
         if (error) {
             return {
                 statusCode: 400,
-                body: JSON.stringify(error.details)
+                body: JSON.stringify(error.details),
+                headers
             };
         }
     }
@@ -27,7 +32,8 @@ module.exports = function buildSubmitEventHandler(eventType, schema) {
     
         return {
             statusCode: 202,
-            body: JSON.stringify(event)
+            body: JSON.stringify(event),
+            headers
         };
     }
     
